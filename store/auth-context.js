@@ -1,4 +1,5 @@
-import {createContext, useState} from "react";
+import {createContext, useEffect, useState} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AuthContext = createContext({
     token: '',
@@ -15,10 +16,12 @@ function AuthContextProvider({children}) {
 
     function authenticate(token) {
         setAuthToken(token);
+        AsyncStorage.setItem('token', token);
     }
 
     function logout() {
         setAuthToken(null);
+        AsyncStorage.removeItem('token')
     }
 
     const value = {
@@ -26,7 +29,7 @@ function AuthContextProvider({children}) {
         isAuthenticated: !!authToken,
         authenticate: authenticate,
         logout: logout
-    }
+    };
 
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
